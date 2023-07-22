@@ -4,9 +4,10 @@ import { ReactNode, useRef } from 'react';
 type Props = {
   sxProps?: SxProps;
   label?: ReactNode;
+  getTags?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const StyledTextArea = ({ sxProps, label }: Props) => {
+const StyledTextArea = ({ sxProps, label, getTags }: Props) => {
   const text = useRef<HTMLDivElement>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -14,6 +15,9 @@ const StyledTextArea = ({ sxProps, label }: Props) => {
       /(^#[а-я\w]+| #[а-я\w]+|\n#[а-я\w]+)/gi,
       '<span style="color: #8b00ff">$&</span>'
     );
+    if (getTags) {
+      getTags(e);
+    }
   };
 
   return (
