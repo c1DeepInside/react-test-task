@@ -5,9 +5,10 @@ type Props = {
   sxProps?: SxProps;
   label?: ReactNode;
   getTags?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  textContent?: string;
 };
 
-const StyledTextArea = ({ sxProps, label, getTags }: Props) => {
+const StyledTextArea = ({ sxProps, label, getTags, textContent }: Props) => {
   const text = useRef<HTMLDivElement>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +28,7 @@ const StyledTextArea = ({ sxProps, label, getTags }: Props) => {
         multiline={true}
         label={label}
         fullWidth
+        value={textContent}
         margin="none"
         InputProps={{
           sx: {
@@ -64,7 +66,9 @@ const StyledTextArea = ({ sxProps, label, getTags }: Props) => {
           },
           ...sxProps,
         }}
-      ></Box>
+      >
+        {textContent}
+      </Box>
     </Box>
   );
 };

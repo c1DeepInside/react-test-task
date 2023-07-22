@@ -2,11 +2,16 @@ import { Box, Button, Typography } from '@mui/material';
 import StyledTextArea from './StyledTextArea';
 import { useState } from 'react';
 import BorderColorRoundedIcon from '@mui/icons-material/Create';
+import { useAppDispatch } from '../hooks/redux';
+import { addNoteStore } from '../store/noteSlice';
 
 const EditBlock = () => {
   const [currentTags, setCurrentTags] = useState<string[] | null>(null);
+  const [currentText, setCurrentText] = useState('');
+  const dispatch = useAppDispatch();
 
   const getTags = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentText(e.target.value);
     setCurrentTags(e.target.value.match(/(^#[а-я\w]+| #[а-я\w]+|\n#[а-я\w]+)/gi));
   };
 
@@ -16,9 +21,13 @@ const EditBlock = () => {
     });
   };
 
+  const addNote = () => {
+    dispatch(addNoteStore({ text: currentText, date: Date.now() }));
+  };
+
   return (
     <>
-      <Box sx={{ mt: '15px' }}>
+      <Box sx={{ mt: '20px' }}>
         <StyledTextArea label="Write your note!" sxProps={{ fontSize: 26 }} getTags={getTags} />
       </Box>
       <Box
@@ -30,6 +39,7 @@ const EditBlock = () => {
           sx={{ fontSize: 14, flexShrink: '0', alignSelf: 'flex-start' }}
           variant="contained"
           startIcon={<BorderColorRoundedIcon />}
+          onClick={addNote}
         >
           Create a note
         </Button>
@@ -39,7 +49,6 @@ const EditBlock = () => {
           sx={{
             mt: '5px',
             fontSize: 16,
-            flexGrow: '1',
             overflow: 'auto',
             color: 'primary.main',
             opacity: 0.8,
