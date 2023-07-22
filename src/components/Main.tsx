@@ -4,22 +4,18 @@ import BorderColorRoundedIcon from '@mui/icons-material/Create';
 
 const Main = () => {
   return (
-    <main>
+    <Box component={'main'}>
       <Container maxWidth="sm">
-        <Box sx={{ pt: '5px' }}>
-          <StyledTextArea label="Write your note!" sxProp={{ fontSize: 24 }} />
+        <Box sx={{ mt: '20px' }}>
+          <StyledTextArea label="Write your note!" sxProps={{ fontSize: 26 }} />
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            sx={{ fontSize: '14px' }}
-            variant="contained"
-            startIcon={<BorderColorRoundedIcon />}
-          >
+        <Box sx={{ mt: '5px', display: 'flex', justifyContent: 'flex-end' }}>
+          <Button sx={{ fontSize: 14 }} variant="contained" startIcon={<BorderColorRoundedIcon />}>
             Create a note
           </Button>
         </Box>
       </Container>
-    </main>
+    </Box>
   );
 };
 
