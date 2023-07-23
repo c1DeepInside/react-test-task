@@ -9,6 +9,7 @@ import {
   useState,
 } from 'react';
 import { INote, RefType } from '../interfaces/note';
+import { regTag } from '../utils/regexp';
 
 type Props = {
   sxProps?: SxProps;
@@ -24,7 +25,7 @@ const StyledTextArea = ({ sxProps, label, getText, note }: Props, ref?: Ref<RefT
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentText(e.target.value);
     textRef.current!.innerHTML = e.target.value.replace(
-      /(^#[а-я\w]+| #[а-я\w]+|\n#[а-я\w]+)/gi,
+      regTag,
       '<span style="color: #8b00ff">$&</span>'
     );
     if (getText) {
@@ -35,7 +36,7 @@ const StyledTextArea = ({ sxProps, label, getText, note }: Props, ref?: Ref<RefT
   useEffect(() => {
     if (note) {
       textRef.current!.innerHTML = note.text.replace(
-        /(^#[а-я\w]+| #[а-я\w]+|\n#[а-я\w]+)/gi,
+        regTag,
         '<span style="color: #8b00ff">$&</span>'
       );
     }

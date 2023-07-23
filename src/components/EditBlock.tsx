@@ -5,6 +5,7 @@ import BorderColorRoundedIcon from '@mui/icons-material/Create';
 import { useAppDispatch } from '../hooks/redux';
 import { addNoteStore } from '../store/noteSlice';
 import { RefType } from '../interfaces/note';
+import { regTag } from '../utils/regexp';
 
 const EditBlock = () => {
   const [currentTags, setCurrentTags] = useState<string[] | null>(null);
@@ -15,7 +16,7 @@ const EditBlock = () => {
 
   const getText = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentText(e.target.value);
-    setCurrentTags(e.target.value.match(/(^#[а-я\w]+| #[а-я\w]+|\n#[а-я\w]+)/gi));
+    setCurrentTags(e.target.value.match(regTag));
   };
 
   const showCurrentTags = (): string[] | undefined => {
