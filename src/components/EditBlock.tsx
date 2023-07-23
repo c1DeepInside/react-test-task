@@ -10,6 +10,7 @@ import { regTag } from '../utils/regexp';
 const EditBlock = () => {
   const [currentTags, setCurrentTags] = useState<string[] | null>(null);
   const [currentText, setCurrentText] = useState('');
+  const [ifError, setIfError] = useState(false);
   const dispatch = useAppDispatch();
 
   const childRef = useRef<RefType>(null);
@@ -26,10 +27,17 @@ const EditBlock = () => {
   };
 
   const addNote = () => {
-    dispatch(addNoteStore({ text: currentText, date: Date.now() }));
-    setCurrentText('');
-    childRef.current?.clearText();
-    setCurrentTags(null);
+    if (currentText === '') {
+      setIfError(true);
+      setTimeout(() => {
+        setIfError(false);
+      }, 2000);
+    } else {
+      dispatch(addNoteStore({ text: currentText, date: Date.now() }));
+      setCurrentText('');
+      childRef.current?.clearText();
+      setCurrentTags(null);
+    }
   };
 
   return (
@@ -40,6 +48,7 @@ const EditBlock = () => {
           sxProps={{ fontSize: 26 }}
           getText={getText}
           ref={childRef}
+          error={ifError}
         />
       </Box>
       <Box
@@ -52,6 +61,7 @@ const EditBlock = () => {
           variant="contained"
           startIcon={<BorderColorRoundedIcon />}
           onClick={addNote}
+          disabled={ifError}
         >
           Create a note
         </Button>

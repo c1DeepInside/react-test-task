@@ -16,9 +16,10 @@ type Props = {
   label?: ReactNode;
   getText?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   note?: INote;
+  error?: boolean;
 };
 
-const StyledTextArea = ({ sxProps, label, getText, note }: Props, ref?: Ref<RefType>) => {
+const StyledTextArea = ({ sxProps, label, getText, note, error }: Props, ref?: Ref<RefType>) => {
   const [currentText, setCurrentText] = useState(note?.text);
   const textRef = useRef<HTMLDivElement>();
 
@@ -54,9 +55,10 @@ const StyledTextArea = ({ sxProps, label, getText, note }: Props, ref?: Ref<RefT
       <TextField
         onChange={handleChange}
         multiline={true}
-        label={label}
+        label={!error ? label : 'Write something!'}
         value={currentText}
         fullWidth
+        error={error}
         margin="none"
         InputProps={{
           sx: {
