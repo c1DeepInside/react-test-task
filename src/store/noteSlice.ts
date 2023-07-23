@@ -33,10 +33,15 @@ const notesSlice = createSlice({
     addNoteStore(state, action: PayloadAction<INote>) {
       state.notes.push(action.payload);
       state.tags = findTags(state.notes);
+      localStorage.setItem('notesStorage', JSON.stringify(state.notes));
+    },
+    addNotesStore(state, action: PayloadAction<INote[]>) {
+      state.notes = action.payload;
     },
     removeNoteStore(state, action: PayloadAction<INote>) {
       state.notes = state.notes.filter((note) => note.date !== action.payload.date);
       state.tags = findTags(state.notes);
+      localStorage.setItem('notesStorage', JSON.stringify(state.notes));
     },
     changeNoteStore(state, action: PayloadAction<INote>) {
       state.notes = state.notes.map(
@@ -44,14 +49,24 @@ const notesSlice = createSlice({
           note.date === action.payload.date ? { text: action.payload.text, date: Date.now() } : note
       );
       state.tags = findTags(state.notes);
+      localStorage.setItem('notesStorage', JSON.stringify(state.notes));
     },
     setCurrentTagsStore(state, action: PayloadAction<string[]>) {
       state.currentTags = action.payload;
     },
+    updateTagsStore(state) {
+      state.tags = findTags(state.notes);
+    },
   },
 });
 
-export const { addNoteStore, removeNoteStore, changeNoteStore, setCurrentTagsStore } =
-  notesSlice.actions;
+export const {
+  addNoteStore,
+  addNotesStore,
+  removeNoteStore,
+  changeNoteStore,
+  setCurrentTagsStore,
+  updateTagsStore,
+} = notesSlice.actions;
 
 export default notesSlice.reducer;

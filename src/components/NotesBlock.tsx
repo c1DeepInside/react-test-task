@@ -1,14 +1,16 @@
 import { Box, Chip, Divider, Typography } from '@mui/material';
-import { useAppSelector } from '../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import Note from './Note';
 import TagsBlock from './TagsBlock';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { INote } from '../interfaces/note';
 import { regTag } from '../utils/regexp';
+import { addNotesStore, updateTagsStore } from '../store/noteSlice';
 
 const NotesBlock = () => {
   const notes = useAppSelector((state) => state.notes.notes);
   const currentTags = useAppSelector((state) => state.notes.currentTags);
+  const dispatch = useAppDispatch();
 
   const visibleNotes: INote[] = useMemo(() => {
     return currentTags.length !== 0
@@ -18,6 +20,13 @@ const NotesBlock = () => {
         })
       : notes;
   }, [currentTags, notes]);
+
+  useEffect(() => {
+    if (localStorage.getItem('notesStorage')) {
+      dispatch(addNotesStore(JSON.parse(localStorage.getItem('notesStorage')!)));
+      dispatch(updateTagsStore());
+    }
+  }, [dispatch]);
 
   return (
     <>
