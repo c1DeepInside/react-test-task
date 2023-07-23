@@ -1,16 +1,19 @@
 import { Box, Button, Typography } from '@mui/material';
 import StyledTextArea from './StyledTextArea';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import BorderColorRoundedIcon from '@mui/icons-material/Create';
 import { useAppDispatch } from '../hooks/redux';
 import { addNoteStore } from '../store/noteSlice';
+import { RefType } from '../interfaces/note';
 
 const EditBlock = () => {
   const [currentTags, setCurrentTags] = useState<string[] | null>(null);
   const [currentText, setCurrentText] = useState('');
   const dispatch = useAppDispatch();
 
-  const getTags = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const childRef = useRef<RefType>(null);
+
+  const getText = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentText(e.target.value);
     setCurrentTags(e.target.value.match(/(^#[а-я\w]+| #[а-я\w]+|\n#[а-я\w]+)/gi));
   };
@@ -23,12 +26,20 @@ const EditBlock = () => {
 
   const addNote = () => {
     dispatch(addNoteStore({ text: currentText, date: Date.now() }));
+    setCurrentText('');
+    childRef.current?.clearText();
+    setCurrentTags(null);
   };
 
   return (
     <>
       <Box sx={{ mt: '20px' }}>
-        <StyledTextArea label="Write your note!" sxProps={{ fontSize: 26 }} getTags={getTags} />
+        <StyledTextArea
+          label="Write your note!"
+          sxProps={{ fontSize: 26 }}
+          getText={getText}
+          ref={childRef}
+        />
       </Box>
       <Box
         sx={{

@@ -17,12 +17,18 @@ const notesSlice = createSlice({
     addNoteStore(state, action: PayloadAction<INote>) {
       state.notes.push(action.payload);
     },
-    removeNote(state, action: PayloadAction<INote>) {
-      state.notes.filter((note) => note.date !== action.payload.date);
+    removeNoteStore(state, action: PayloadAction<INote>) {
+      state.notes = state.notes.filter((note) => note.date !== action.payload.date);
+    },
+    changeNoteStore(state, action: PayloadAction<INote>) {
+      state.notes = state.notes.map(
+        (note): INote =>
+          note.date === action.payload.date ? { text: action.payload.text, date: Date.now() } : note
+      );
     },
   },
 });
 
-export const { addNoteStore, removeNote } = notesSlice.actions;
+export const { addNoteStore, removeNoteStore, changeNoteStore } = notesSlice.actions;
 
 export default notesSlice.reducer;

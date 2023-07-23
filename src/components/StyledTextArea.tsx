@@ -1,25 +1,52 @@
 import { Box, SxProps, TextField } from '@mui/material';
-import { ReactNode, useRef } from 'react';
+import {
+  ReactNode,
+  Ref,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
+import { INote, RefType } from '../interfaces/note';
 
 type Props = {
   sxProps?: SxProps;
   label?: ReactNode;
-  getTags?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  textContent?: string;
+  getText?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  note?: INote;
 };
 
-const StyledTextArea = ({ sxProps, label, getTags, textContent }: Props) => {
-  const text = useRef<HTMLDivElement>();
+const StyledTextArea = ({ sxProps, label, getText, note }: Props, ref?: Ref<RefType>) => {
+  const [currentText, setCurrentText] = useState(note?.text);
+  const textRef = useRef<HTMLDivElement>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    text.current!.innerHTML = e.target.value.replace(
+    setCurrentText(e.target.value);
+    textRef.current!.innerHTML = e.target.value.replace(
       /(^#[а-я\w]+| #[а-я\w]+|\n#[а-я\w]+)/gi,
       '<span style="color: #8b00ff">$&</span>'
     );
-    if (getTags) {
-      getTags(e);
+    if (getText) {
+      getText(e);
     }
   };
+
+  useEffect(() => {
+    if (note) {
+      textRef.current!.innerHTML = note.text.replace(
+        /(^#[а-я\w]+| #[а-я\w]+|\n#[а-я\w]+)/gi,
+        '<span style="color: #8b00ff">$&</span>'
+      );
+    }
+  }, [note]);
+
+  const clearText = () => {
+    setCurrentText('');
+    textRef.current!.innerHTML = '';
+  };
+
+  useImperativeHandle(ref, () => ({ clearText }));
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -27,8 +54,8 @@ const StyledTextArea = ({ sxProps, label, getTags, textContent }: Props) => {
         onChange={handleChange}
         multiline={true}
         label={label}
+        value={currentText}
         fullWidth
-        value={textContent}
         margin="none"
         InputProps={{
           sx: {
@@ -46,9 +73,8 @@ const StyledTextArea = ({ sxProps, label, getTags, textContent }: Props) => {
         }}
       />
       <Box
-        ref={text}
+        ref={textRef}
         component={'div'}
-        contentEditable
         sx={{
           ...{
             whiteSpace: 'pre-wrap',
@@ -66,11 +92,9 @@ const StyledTextArea = ({ sxProps, label, getTags, textContent }: Props) => {
           },
           ...sxProps,
         }}
-      >
-        {textContent}
-      </Box>
+      ></Box>
     </Box>
   );
 };
 
-export default StyledTextArea;
+export default forwardRef(StyledTextArea);
